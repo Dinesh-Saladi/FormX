@@ -28,7 +28,7 @@ async function GeminiGenerate(
 ) {
   try {
     setLoading(true);
-    const response = await axios.post(`${BASE_URL}/generate`, {
+    const response = await axios.post(`${BASE_URL}/gemini/generate`, {
       prompt: prompt,
     });
     console.log(response);
