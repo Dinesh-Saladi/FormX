@@ -16,6 +16,8 @@ import { Loader2, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_API + "/api";
+
 async function GeminiGenerate(
   prompt,
   setFormFields,
@@ -26,10 +28,9 @@ async function GeminiGenerate(
 ) {
   try {
     setLoading(true);
-    const response = await axios.post(
-      "http://localhost:5000/api/gemini/generate",
-      { prompt: prompt }
-    );
+    const response = await axios.post(`${BASE_URL}/generate`, {
+      prompt: prompt,
+    });
     console.log(response);
     setFormFields(response.data.data);
     toast.success("Form Generated");
