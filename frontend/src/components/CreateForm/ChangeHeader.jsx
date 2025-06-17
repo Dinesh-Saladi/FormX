@@ -13,9 +13,11 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { motion } from "framer-motion";
 
 function ChangeHeader({ formFields, setFormFields }) {
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
   const [title, setTitle] = useState(formFields.title);
   const [description, setDescription] = useState(formFields.description);
   function HandleSubmit() {
@@ -29,10 +31,20 @@ function ChangeHeader({ formFields, setFormFields }) {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="fixed bottom-5 ml-5 shadow-2xl z-50 cursor-pointer flex items-center">
-            <Pen className="h-10 w-10" />
-            <h2>Change Headers</h2>
-          </Button>
+          <div>
+            <Button
+              className="shadow-2xl z-50 cursor-pointer flex items-center"
+              onMouseEnter={() => setShow(true)}
+              onMouseLeave={() => setShow(false)}
+            >
+              {show && (
+                <motion.h2 transition={{ duration: 0.2, ease: "easeInOut" }}>
+                  Change Headers
+                </motion.h2>
+              )}
+              <Pen className="h-10 w-10" />
+            </Button>
+          </div>
         </DialogTrigger>
 
         <DialogContent className="max-w-[425px]">

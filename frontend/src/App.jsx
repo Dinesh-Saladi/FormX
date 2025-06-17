@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
-import { ThemeProvider } from "@/components/theme-provider";
 import SideBar from "./components/SideBar";
 import DashBorad from "./pages/DashBorad";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,6 +10,7 @@ import { useEffect } from "react";
 import BarLoader from "./components/BarLoader";
 import NotFound from "./components/NotFound";
 import Home from "./pages/Home";
+import Preview from "./components/CreateForm/Preview";
 
 axios.defaults.withCredentials = true;
 
@@ -29,7 +29,7 @@ function App() {
       });
   }, []);
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <>
       <Toaster richColors />
       {loading ? (
         <div className="flex min-h-screen items-center justify-center">
@@ -42,11 +42,12 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard/*" element={<DashBorad />} />
+            <Route path="/preview" element={<Preview />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       )}
-    </ThemeProvider>
+    </>
   );
 }
 

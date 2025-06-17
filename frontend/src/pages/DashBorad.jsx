@@ -4,16 +4,42 @@ import DashBoardHome from "../components/DashBoardHome";
 import SideBar from "../components/SideBar";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
+import Cookies from "js-cookie";
+import BarLoader from "../components/BarLoader";
 
 function DashBorad() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [formFields, setFormFields] = useState({
+  const [formFields, setFormFields] = useState(null);
+  const empty = {
     title: "Untitled",
     description: "Undescribed",
+    theme: "default",
     fields: [],
-  });
-  console.log(formFields);  
+  };
+  const [getting, setGetting] = useState(false);
+  useEffect(() => {
+    setGetting(true);
+    try {
+      const draft = Cookies.get("form-fields");
+      console.log(draft);
+      if (draft) setFormFields(JSON.parse(draft));
+      else setFormFields(empty);
+    } catch (err) {
+      console.error("Error parsing cookie:", err);
+      setFormFields(empty);
+    }
+    setGetting(false);
+  }, []);
+
+  if (getting)
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <BarLoader />
+      </div>
+    );
+
+  console.log(formFields);
 
   useEffect(() => {
     if (!user) {
@@ -22,7 +48,7 @@ function DashBorad() {
   }, []);
 
   if (!user) return null;
-  
+
   return (
     <div className="flex h-screen">
       <SideBar />
@@ -34,12 +60,7 @@ function DashBorad() {
           />
           <Route
             path="/create"
-            element={
-              <CreateForm
-                formFieldsDash={formFields}
-                setFormFieldsDash={setFormFields}
-              />
-            }
+            element={<CreateForm formFieldsDash={formFields} />}
           />
         </Routes>
       </main>

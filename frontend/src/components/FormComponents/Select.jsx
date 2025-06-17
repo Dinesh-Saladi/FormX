@@ -8,11 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import "./../../index.css";
+import { useTheme } from "next-themes";
 
-function Select({ fieldId, setFormData, required, label, options }) {
+function Select({ fieldId, setFormData, required, label, options, theme }) {
   const [select, setSelect] = useState("");
+  const { systemTheme } = useTheme();
   return (
-    <div className="flex flex-col space-y-1.5">
+    <div className={`flex flex-col space-y-1.5`}>
       <Label htmlFor="select">{label}</Label>
       <SelectS
         id="select"
@@ -25,7 +28,7 @@ function Select({ fieldId, setFormData, required, label, options }) {
         <SelectTrigger className="w-full cursor-pointer">
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className={`${theme} ${systemTheme}`}>
           {options
             .filter((option) => option.trim() !== "")
             .map((op, ind) => {

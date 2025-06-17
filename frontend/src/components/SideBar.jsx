@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuthStore } from "../store/useAuthStore";
+import Cookies from "js-cookie";
 
 const navItems = [
   {
@@ -48,6 +49,9 @@ function SideBar() {
     try {
       await logoutPromise;
       navigate("/login");
+      Object.keys(Cookies.get()).forEach((cookieName) => {
+        Cookies.remove(cookieName, { path: "/" });
+      });
     } catch (error) {
       // Error handled by toast
     }

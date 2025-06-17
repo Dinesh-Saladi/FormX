@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import Email from "./FormComponents/Email";
-
+import { useTheme } from "next-themes";
 import {
   Card,
   CardContent,
@@ -9,12 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import Text from "./FormComponents/Text";
-import Radio from "./FormComponents/Radio";
-import CheckBox from "./FormComponents/CheckBox";
-import Select from "./FormComponents/Select";
-import TextArea from "./FormComponents/TextArea";
-import Date from "./FormComponents/Date";
 import {
   closestCenter,
   DndContext,
@@ -23,25 +16,47 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Grip, Rocket, Trash2 } from "lucide-react";
-import EditFields from "@/components/CreateForm/EditFields";
+import { Loader2, Rocket } from "lucide-react";
 import AddFieldButton from "@/components/CreateForm/AddFieldButton";
 import ChangeHeader from "./CreateForm/ChangeHeader";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import BarLoader from "./BarLoader";
+import ChangeTheme from "./CreateForm/ChangeTheme";
+import axios from "axios";
+import { useAuthStore } from "../store/useAuthStore";
+import SortFields from "./CreateForm/SortFields";
+import OnDragEnd from "./CreateForm/OnDragEnd.js";
+import PreviewButton from "./CreateForm/PreviewButton.jsx";
 
-function CreateForm({ formFieldsDash, setFormFieldsDash }) {
+const BASE_URL = import.meta.env.VITE_BACKEND_API + "/api";
+
+function CreateForm({ formFieldsDash }) {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [formFields, setFormFields] = useState(formFieldsDash);
   const [formData, setFormData] = useState({});
-  // console.log(formData);
+  const { systemTheme } = useTheme();
+  const [isLoading, setLoading] = useState(false);
+  const [theme, setTheme] = useState(
+    formFieldsDash ? formFieldsDash.theme : "default"
+  );
+  useEffect(() => {
+    setTheme(formFieldsDash ? formFieldsDash.theme : "default");
+    setFormFields(formFieldsDash);
+    console.log(formFieldsDash);
+  }, [formFieldsDash]);
+  useEffect(() => {
+    if (formFields) Cookies.set("form-fields", JSON.stringify(formFields));
+  }, [formFields]);
+  useEffect(() => {
+    setFormFields((p) => ({ ...p, theme: theme }));
+  }, [theme]);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -50,213 +65,112 @@ function CreateForm({ formFieldsDash, setFormFieldsDash }) {
       },
     })
   );
-  function SortFields({ field }) {
-    const { attributes, listeners, setNodeRef, transform, transition } =
-      useSortable({ id: field });
-
-    const style = {
-      transition,
-      transform: CSS.Transform.toString(transform),
-    };
-
+  if (!formFields || !formFields.fields)
     return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        className="relative flex items-start gap-2"
-      >
-        <button
-          type="button"
-          className="cursor-grab active:cursor-grabbing p-2 rounded hover:bg-muted touch-none"
-          aria-label="Drag to reorder"
-          {...listeners}
-          {...attributes}
-        >
-          <Grip className="h-5 w-5" />
-        </button>
-        <div className="flex-1">
-          {field.type === "text" && (
-            <Text
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              placeholder={field.placeholder}
-              label={field.label}
-            />
-          )}
-          {field.type === "email" && (
-            <Email
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              placeholder={field.placeholder}
-              label={field.label}
-            />
-          )}
-          {field.type === "radio" && (
-            <Radio
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              label={field.label}
-              options={field.options}
-            />
-          )}
-          {field.type === "checkbox" && (
-            <CheckBox
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              label={field.label}
-              options={field.options}
-            />
-          )}
-          {field.type === "select" && (
-            <Select
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              label={field.label}
-              options={field.options}
-            />
-          )}
-          {field.type === "textarea" && (
-            <TextArea
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              placeholder={field.placeholder}
-              label={field.label}
-            />
-          )}
-          {field.type === "date" && (
-            <Date
-              fieldId={field.uuid}
-              setFormData={setFormData}
-              required={field.required}
-              label={field.label}
-            />
-          )}
-        </div>
-        <EditFields setFormFields={setFormFields} field={field} />
-        <Button
-          variant="destructive"
-          onClick={() => {
-            setFormFields((prev) => {
-              console.log(prev);
-              const newFields = prev.fields.filter(
-                (f) => f.uuid !== field.uuid
-              );
-              console.log(newFields);
-              return {
-                ...prev,
-                fields: newFields,
-              };
-            });
-          }}
-          className="p-2 cursor-pointer"
-        >
-          <Trash2 className="h-5 w-5" />
-        </Button>
+      <div className="flex min-h-screen items-center justify-center">
+        <BarLoader />
       </div>
     );
-  }
-
-  function onDragEnd(event) {
-    const { active, over } = event;
-    console.log(event);
-    if (!over || active.id === over.id) {
-      return;
-    }
-    setFormFields((prev) => {
-      const oldIndex = prev.fields.findIndex(
-        (field) => field.uuid === active.id.uuid
-      );
-      const newIndex = prev.fields.findIndex(
-        (field) => field.uuid === over.id.uuid
-      );
-      console.log(oldIndex + " " + newIndex);
-      const newFields = arrayMove(prev.fields, oldIndex, newIndex);
-
-      console.log(newFields);
-
-      return {
-        ...prev,
-        fields: newFields,
-      };
-    });
-  }
   return (
-    <div className="bg-background min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-8 flex flex-row justify-between pt-6 md:pt-8 px-6 md:px-8 items-center"
-      >
-        <div>
-          <h2 className="text-4xl font-bold text-foreground mb-2">
-            Form Editor
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            You're in control — drag, drop, and tweak your form fields with
-            ease.
-          </p>
-        </div>
-        <Button
-          onClick={() => {
-            toast.success("Form Published");
-            setFormFieldsDash({
-              title: "Untitled",
-              description: "Undescribed",
-              fields: [],
-            });
-            navigate("/dashboard");
-          }}
-          className="shadow-2xl z-50 cursor-pointer flex items-center"
+    <div className={`${theme} ${systemTheme} h-full`}>
+      <div className="bg-background min-h-screen pb-10">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8 flex flex-row justify-between pt-6 md:pt-8 px-6 md:px-8 items-center"
         >
-          <Rocket className="h-10 w-10" />
-          <h2>Publish Form</h2>
-        </Button>
-      </motion.div>
-      <div className="flex flex-col justify-center items-center mt-5 ml-5 mr-5 md:mt-10 md:ml-10 md:mr-10 mb-16">
-        <Card className="min-w-[350px] w-full max-w-md py-4 rounded-xl shadow-md">
-          <CardHeader>
-            <CardTitle>{formFields.title}</CardTitle>
-            <CardDescription>{formFields.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                console.log(formData);
-              }}
-            >
-              <div className="grid w-full items-center gap-4">
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={onDragEnd}
-                >
-                  <SortableContext
-                    items={formFields.fields}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {formFields.fields.map((field) => (
-                      <SortFields key={field.uuid} field={field} />
-                    ))}
-                  </SortableContext>
-                </DndContext>
-                <Button className="w-full cursor-pointer" type="submit">
-                  Submit
-                </Button>
+          <div>
+            <h2 className="text-4xl font-bold text-foreground mb-2">
+              Form Editor
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              You're in control — drag, drop, and tweak your form fields with
+              ease.
+            </p>
+          </div>
+          <Button
+            onClick={async () => {
+              setLoading(true);
+              try {
+                const res = await axios.post(`${BASE_URL}/form/publish-form`, {
+                  formFields,
+                  userId: user.id,
+                });
+                console.log(res);
+                toast.success("Form Published");
+                navigate("/dashboard");
+                Cookies.remove("form-fields", { path: "/" });
+              } catch (e) {
+                toast.error("Try Again");
+                console.log(e);
+              }
+              setLoading(false);
+            }}
+            className="shadow-2xl z-50 cursor-pointer"
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin w-full" />
+            ) : (
+              <div className="flex items-center gap-1">
+                <Rocket className="h-10 w-10" />
+                <h2>Publish Form</h2>
               </div>
-            </form>
-          </CardContent>
-        </Card>
+            )}
+          </Button>
+        </motion.div>
+        <div className="flex flex-col justify-center items-center mt-5 ml-5 mr-5 md:mt-10 md:ml-10 md:mr-10 mb-16">
+          <Card className="min-w-[350px] w-full max-w-md py-4 rounded-xl shadow-md">
+            <CardHeader>
+              <CardTitle>{formFields.title}</CardTitle>
+              <CardDescription>{formFields.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  console.log(formData);
+                }}
+              >
+                <div className="grid w-full items-center gap-4">
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={(event) => {
+                      OnDragEnd(event, setFormFields);
+                    }}
+                  >
+                    <SortableContext
+                      items={formFields.fields}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {formFields.fields.map((field) => (
+                        <SortFields
+                          key={field.uuid}
+                          field={field}
+                          setFormFields={setFormFields}
+                          setFormData={setFormData}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                  <Button className="w-full cursor-pointer" type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="fixed bottom-5 ml-5 flex flex-col gap-2">
+          <PreviewButton />
+          <ChangeTheme theme={theme} setTheme={setTheme} />
+        </div>
+        <div className="fixed bottom-5 right-5 flex flex-col gap-2 items-end">
+          <AddFieldButton setFormFields={setFormFields} />
+          <ChangeHeader setFormFields={setFormFields} formFields={formFields} />
+        </div>
       </div>
-      <ChangeHeader setFormFields={setFormFields} formFields={formFields} />
-      <AddFieldButton setFormFields={setFormFields} />
     </div>
   );
 }

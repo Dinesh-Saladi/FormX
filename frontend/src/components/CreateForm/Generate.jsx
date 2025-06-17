@@ -11,8 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { GoogleGenAI } from "@google/genai";
-import { Loader2, Plus, Sparkles } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -32,7 +31,7 @@ async function GeminiGenerate(
       prompt: prompt,
     });
     console.log(response);
-    setFormFields(response.data.data);
+    setFormFields({...response.data.data, theme: "default"});
     toast.success("Form Generated");
     setLoading(false);
     setOpen(false);

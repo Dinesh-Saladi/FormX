@@ -22,9 +22,11 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "../ui/button";
+import { motion } from "framer-motion";
 
 function AddFieldButton({ setFormFields }) {
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
   const [label, setLabel] = useState("");
   const [required, setRequired] = useState(false);
   const [placeholder, setPlaceholder] = useState("");
@@ -99,9 +101,17 @@ function AddFieldButton({ setFormFields }) {
         }}
       >
         <DialogTrigger asChild>
-          <Button className="fixed bottom-5 right-5 shadow-2xl z-50 cursor-pointer flex items-center">
+          <Button
+            className="shadow-2xl z-50 cursor-pointer flex items-center"
+            onMouseEnter={() => setShow(true)}
+            onMouseLeave={() => setShow(false)}
+          >
+            {show && (
+              <motion.h2 transition={{ duration: 0.2, ease: "easeInOut" }}>
+                Add Field
+              </motion.h2>
+            )}
             <Plus className="h-10 w-10" />
-            <h2>Add Field</h2>
           </Button>
         </DialogTrigger>
 

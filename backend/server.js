@@ -11,6 +11,7 @@ import { sql } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import geminiRoutes from "./routes/geminiRoutes.js";
 import initializePassport from "./config/passport.js";
+import formRoutes from "./routes/formRoutes.js";
 
 initializePassport(passport);
 
@@ -45,7 +46,7 @@ if (process.env.NODE_ENV === "production") {
             resave: false,
             saveUninitialized: false,
             cookie: {
-                maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+                maxAge: 4 * 24 * 60 * 60 * 1000, // 4 days in milliseconds
                 secure: true, // Required for HTTPS
                 sameSite: "Lax", // Required for cross-origin
                 httpOnly: true, // Optional, for security
@@ -59,7 +60,7 @@ if (process.env.NODE_ENV === "production") {
             resave: false,
             saveUninitialized: false,
             cookie: {
-                maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days in milliseconds
+                maxAge: 4 * 24 * 60 * 60 * 1000, // 4 days in milliseconds
             },
         })
     );
@@ -70,6 +71,7 @@ app.use(passport.session());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/gemini", geminiRoutes);
+app.use("/api/form", formRoutes);
 
 async function initializeDatabase() {
     try {

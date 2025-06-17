@@ -12,37 +12,15 @@ import {
 import { Input } from "../ui/input";
 import { format } from "date-fns"
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
-function Date({ fieldId, setFormData, required, label }) {
+function Date({ fieldId, setFormData, required, label, theme }) {
   const [date, setDate] = useState(null);
   const [open, setOpen] = useState(false);
+  const { systemTheme } = useTheme();
   return (
     <div className="flex flex-col space-y-1.5">
       <Label htmlFor="date">{label}</Label>
-      {/* <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            id="date"
-            className="cursor-pointer justify-between font-normal w-full"
-          >
-            {date ? date.toLocaleDateString() : "Select date"}
-            <ChevronDownIcon />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={date}
-            captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date);
-              setFormData((p) => ({ ...p, [fieldId]: date }));
-              setOpen(false);
-            }}
-          />
-        </PopoverContent>
-      </Popover> */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -60,7 +38,7 @@ function Date({ fieldId, setFormData, required, label }) {
           <Calendar
             mode="single"
             selected={date}
-            className="cursor-pointer"
+            className={`${theme} ${systemTheme} cursor-pointer`}
             onSelect={(date) => {
               setDate(date);
               setFormData((p) => ({ ...p, [fieldId]: date }));
