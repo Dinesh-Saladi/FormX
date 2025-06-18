@@ -21,8 +21,6 @@ export const publishForm = async (req, res) => {
 
 export const getForms = async (req, res) => {
     const { userId } = req.query;
-    // console.log("\n\nfrom here")
-    // console.log(userId);
     try {
         const result = await sql`
         SELECT uuid, title, created_at, responses
@@ -40,8 +38,6 @@ export const getForms = async (req, res) => {
 
 export const getForm = async (req, res) => {
     const { formId } = req.query;
-    // console.log("\n\nfrom here")
-    // console.log(userId);
     try {
         const result = await sql`
         SELECT form_fields
@@ -56,3 +52,19 @@ export const getForm = async (req, res) => {
     }
 }
 
+export const formSubmission = async (req, res) => {
+    const submissionData = req.body.formData;
+    const formId = req.body.formId;
+    try {
+        const result = await sql`
+        INSERT INTO submissions (submission_data, form_id)
+        VALUES (${submissionData}, ${formId})
+        RETURNING *;
+        `;
+        console.log(result);
+        return res.status(201).json({ success: true });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ success: false });
+    }
+}
