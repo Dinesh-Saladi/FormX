@@ -11,6 +11,7 @@ import BarLoader from "./components/BarLoader";
 import NotFound from "./components/NotFound";
 import Home from "./pages/Home";
 import Preview from "./components/CreateForm/Preview";
+import Form from "./pages/Form";
 
 axios.defaults.withCredentials = true;
 
@@ -43,6 +44,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard/*" element={<DashBorad />} />
             <Route path="/preview" element={<Preview />} />
+            <Route path="/form/:formId" element={<Form />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

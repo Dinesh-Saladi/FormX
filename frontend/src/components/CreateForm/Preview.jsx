@@ -15,7 +15,7 @@ import { useTheme } from "next-themes";
 function Preview() {
   const [formFields, setFormFields] = useState(null);
   const [getting, setGetting] = useState(true);
-  const {systemTheme} = useTheme();
+  const { systemTheme } = useTheme();
   useEffect(() => {
     setGetting(true);
     try {
@@ -36,7 +36,9 @@ function Preview() {
       </div>
     );
   return (
-    <div className={`${formFields.theme} ${systemTheme} flex min-h-screen items-center justify-center py-10 bg-background`}>
+    <div
+      className={`${formFields.theme} ${systemTheme} flex min-h-screen items-center justify-center py-10 bg-background`}
+    >
       <Card className="min-w-[350px] w-full max-w-md py-4 rounded-xl shadow-md">
         <CardHeader>
           <CardTitle>{formFields.title}</CardTitle>
@@ -50,7 +52,11 @@ function Preview() {
           >
             <div className="grid w-full items-center gap-4">
               {formFields.fields.map((field) => (
-                <PreviewMap key={field.uuid} field={field} theme={formFields.theme}/>
+                <PreviewMap
+                  key={field.uuid}
+                  field={field}
+                  theme={formFields.theme}
+                />
               ))}
               <Button className="w-full cursor-pointer" type="submit">
                 Submit
