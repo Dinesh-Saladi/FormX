@@ -20,7 +20,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 
-function ShareButton({ uuid, title }) {
+function ShareButton({ uuid, title, show }) {
   const [open, setOpen] = useState(false);
   const url = `${window.location.origin}/form/${uuid}`;
   const encodedText = encodeURIComponent(
@@ -69,9 +69,9 @@ function ShareButton({ uuid, title }) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <div>
-            <Button className="shadow-2xl cursor-pointer flex gap-2 items-center mt-1">
+            <Button className="shadow-2xl cursor-pointer flex gap-2 items-center">
               <Share2 className="h-10 w-10" />
-              <span>Share</span>
+              {!show && <span>Share</span>}
             </Button>
           </div>
         </DialogTrigger>

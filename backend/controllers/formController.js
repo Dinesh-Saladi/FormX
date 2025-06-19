@@ -87,3 +87,32 @@ export const deleteForm = async (req, res) => {
         return res.status(500).json({ success: false });
     }
 }
+
+export const getResponses = async (req, res) => {
+    const { uuid, userId } = req.query;
+    try {
+        const result = await sql`
+        SELECT user_id FROM forms
+        WHERE uuid = ${uuid}
+        `;
+        console.log(result);
+        if (result.length == 0) {
+            return res.status(404).json({ message: "Requested form doesn't exist" });
+        }
+        if (result[0].user_id != userId) {
+            return res.status(403).json({ message: "Access Denied" });
+        }
+        const result1 = await sql`
+        SELECT submission_data FROM submissions
+        WHERE form_id = ${uuid}
+        `;
+        const result2 = await sql`
+        SELECT form_fields FROM forms
+        WHERE uuid = ${uuid}
+        `;
+        console.log(result1);
+        return res.status(200).json({ responses: result1, formFields: JSON.parse(result2[0].form_fields) });
+    } catch (e) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}

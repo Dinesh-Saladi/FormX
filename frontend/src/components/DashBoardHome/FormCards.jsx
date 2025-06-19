@@ -11,8 +11,7 @@ import { Button } from "../ui/button";
 import { ArrowRight, ArrowUpRight, Share, Trash } from "lucide-react";
 import Delete from "./Delete";
 import ShareButton from "./Share";
-function FormCards({ forms, setForms }) {
-  const navigate = useNavigate();
+function FormCards({ forms, setForms, setRequested }) {
   console.log(forms);
   return (
     <div className="grid grids-col-1 sm:grid-cols-2 gap-4">
@@ -24,9 +23,14 @@ function FormCards({ forms, setForms }) {
           >
             <CardHeader className="relative">
               <CardTitle className="text-start text-xl">{form.title}</CardTitle>
-              <Link to={`/form/${form.uuid}`}>
-                <ArrowUpRight className="absolute top-0 right-3 w-6 h-6 transition-transform hover:translate-x-1 hover:-translate-y-1 text-muted-foreground" />
-              </Link>
+              {/* <Link to={`/form/${form.uuid}`}> */}
+              <ArrowUpRight
+                onClick={() => {
+                  setRequested(form.uuid);
+                }}
+                className="absolute cursor-pointer top-0 right-3 w-6 h-6 transition-transform hover:translate-x-1 hover:-translate-y-1 text-muted-foreground"
+              />
+              {/* </Link> */}
             </CardHeader>
             <CardContent>
               <div className="flex flex-col items-start">
@@ -42,7 +46,7 @@ function FormCards({ forms, setForms }) {
               </div>
             </CardContent>
             <CardFooter className="flex items-center justify-between gap-2">
-              <ShareButton uuid={form.uuid} title={form.title}/>
+              <ShareButton uuid={form.uuid} title={form.title} />
               <Delete uuid={form.uuid} setForms={setForms} />
             </CardFooter>
           </Card>

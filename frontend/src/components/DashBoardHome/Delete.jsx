@@ -23,7 +23,7 @@ function Delete({ uuid, setForms }) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <div>
-            <Button className="shadow-2xl cursor-pointer mt-1">
+            <Button className="shadow-2xl cursor-pointer">
               <Trash className="h-10 w-10" />
             </Button>
           </div>
