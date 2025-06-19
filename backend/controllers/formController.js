@@ -61,6 +61,11 @@ export const formSubmission = async (req, res) => {
         VALUES (${submissionData}, ${formId})
         RETURNING *;
         `;
+        const result1 = await sql`
+        UPDATE forms
+        SET responses = responses + 1
+        WHERE uuid = ${formId}
+        `;
         console.log(result);
         return res.status(201).json({ success: true });
     } catch (e) {
