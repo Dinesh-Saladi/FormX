@@ -6,63 +6,46 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { Share, Trash } from "lucide-react";
-function FormCards({ forms }) {
+import { ArrowRight, ArrowUpRight, Share, Trash } from "lucide-react";
+import Delete from "./Delete";
+import ShareButton from "./Share";
+function FormCards({ forms, setForms }) {
   const navigate = useNavigate();
   console.log(forms);
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid grids-col-1 sm:grid-cols-2 gap-4">
       {forms.map((form) => {
         return (
-          <Link to={`/form/${form.uuid}`}>
-            <Card
-              key={form.uuid}
-              className="w-full h-full max-w-md rounded-xl shadow-md hover:shadow-2xl flex flex-col justify-center"
-            >
-              <CardHeader>
-                <CardTitle className="text-start text-xl">
-                  {form.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col items-start">
-                  <p className="text-sm text-muted-foreground">
-                    Created:{" "}
-                    {formatDistanceToNow(new Date(form.created_at), {
-                      addSuffix: true,
-                    })}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Responses: {form.responses}
-                  </p>
-                </div>
-              </CardContent>
-              <CardFooter className="flex items-center justify-between gap-2">
-                <Link to="/">
-                  <Button
-                    variant="outline"
-                    className="flex gap-2 items-center mt-1"
-                  >
-                    <Share />
-                    <span>Share</span>
-                  </Button>
-                </Link>
-                <Link to="/form">
-                  <Button
-                    className="flex gap-2 items-center mt-1"
-                    onClick={() => {
-                      console.log("clicked.....");
-                      navigate("/");
-                    }}
-                  >
-                    <Trash />
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          </Link>
+          <Card
+            key={form.uuid}
+            className="w-full h-full rounded-xl shadow-md hover:shadow-2xl"
+          >
+            <CardHeader className="relative">
+              <CardTitle className="text-start text-xl">{form.title}</CardTitle>
+              <Link to={`/form/${form.uuid}`}>
+                <ArrowUpRight className="absolute top-0 right-3 w-6 h-6 transition-transform hover:translate-x-1 hover:-translate-y-1 text-muted-foreground" />
+              </Link>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-start">
+                <p className="text-sm text-muted-foreground">
+                  Created:{" "}
+                  {formatDistanceToNow(new Date(form.created_at), {
+                    addSuffix: true,
+                  })}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Responses: {form.responses}
+                </p>
+              </div>
+            </CardContent>
+            <CardFooter className="flex items-center justify-between gap-2">
+              <ShareButton uuid={form.uuid} title={form.title}/>
+              <Delete uuid={form.uuid} setForms={setForms} />
+            </CardFooter>
+          </Card>
         );
       })}
     </div>

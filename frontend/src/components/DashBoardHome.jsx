@@ -62,7 +62,7 @@ function DashBoardHome({ setFormFields }) {
         <Generate setNewForm={setNewForm} setFormFields={setFormFields} />
       </div>
       <div>
-        <FormCards forms={forms}/>
+        <FormCards forms={forms} setForms={setForms}/>
       </div>
     </motion.div>
   );

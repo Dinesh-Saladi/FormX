@@ -68,3 +68,17 @@ export const formSubmission = async (req, res) => {
         return res.status(500).json({ success: false });
     }
 }
+
+export const deleteForm = async (req, res) => {
+    console.log(req.body.uuid);
+    const { uuid } = req.body
+    try {
+        const result = await sql`
+        DELETE FROM forms
+        WHERE uuid = ${uuid}
+        `;
+        return res.status(200).json({ success: true });
+    } catch (e) {
+        return res.status(500).json({ success: false });
+    }
+}
