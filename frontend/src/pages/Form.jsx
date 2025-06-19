@@ -15,6 +15,7 @@ import {
 import { Button } from "../components/ui/button";
 import FormMap from "../components/Form/FormMap";
 import { Loader2 } from "lucide-react";
+import NotFound from "../components/NotFound";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_API + "/api";
 
@@ -24,6 +25,7 @@ function Form() {
   const [formFields, setFormFields] = useState(null);
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const { systemTheme } = useTheme();
   useEffect(() => {
     console.log(formData);
@@ -38,15 +40,17 @@ function Form() {
         });
         console.log(JSON.parse(res.data.data.form_fields));
         setFormFields(JSON.parse(res.data.data.form_fields));
-        toast.success("got the data");
       } catch (e) {
         console.log(e);
-        toast.error("try again");
-        navigate("/");
+        setNotFound(true);
       }
     };
     getForm();
   }, []);
+
+  if (notFound) {
+    return <NotFound />;
+  }
 
   if (!formFields) {
     return (
