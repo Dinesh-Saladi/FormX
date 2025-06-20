@@ -18,13 +18,18 @@ export const register = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email already exists" });
     }
-    await sql`
+    const result1 = await sql`
             INSERT INTO users (name, email, password)
             VALUES (${req.body.name}, ${req.body.email}, ${hashedPassword})
+            RETURNING *
         `;
-    res
-      .status(201)
-      .json({ success: true, message: "User registered successfully" });
+    const user = result1[0];
+    req.logIn(user, (e)=>{
+      console.log("Redirecting..");
+      return res
+        .status(201)
+        .json({ success: true, message: "User registered successfully", user });
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Error registering user" });
@@ -32,7 +37,7 @@ export const register = async (req, res) => {
 };
 
 export const logOut = (req, res, next) => {
-  req.logout(function(err) {
+  req.logout(function (err) {
     if (err) return next(err);
     res.json({ message: "Logged out successfully" });
   });

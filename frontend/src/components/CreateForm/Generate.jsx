@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Loader2, Sparkles } from "lucide-react";
+import { Link, Loader2, Sparkles, SparklesIcon } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -31,7 +31,7 @@ async function GeminiGenerate(
       prompt: prompt,
     });
     console.log(response);
-    setFormFields({...response.data.data, theme: "default"});
+    setFormFields({ ...response.data.data, theme: "default" });
     toast.success("Form Generated");
     setLoading(false);
     setOpen(false);
@@ -45,7 +45,7 @@ async function GeminiGenerate(
   }
 }
 
-function Generate({ setNewForm, setFormFields }) {
+function Generate({ setNewForm, setFormFields, sidebar, tab }) {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -63,10 +63,25 @@ function Generate({ setNewForm, setFormFields }) {
     <div className="flex flex-col gap-2">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="shadow-3xl z-50 cursor-pointer flex items-center">
-            <Sparkles className="h-10 w-10" />
-            <h2>Create Form</h2>
-          </Button>
+          {sidebar ? (
+            <div>
+              {tab ? (
+                <div className="cursor-pointer flex items-center justify-center p-3 rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+              ) : (
+                <div className="cursor-pointer flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground">
+                  <Sparkles className="w-5 h-5" />
+                  <h2>Create Form</h2>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Button className="shadow-3xl z-50 cursor-pointer flex items-center">
+              <Sparkles className="h-10 w-10" />
+              <h2>Create Form</h2>
+            </Button>
+          )}
         </DialogTrigger>
 
         <DialogContent className="max-w-[425px]">

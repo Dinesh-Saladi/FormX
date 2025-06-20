@@ -18,10 +18,11 @@ function EditFields({ setFormFields, field }) {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState(field.label);
   const [required, setRequired] = useState(field.required);
-  const [placeholder, setPlaceholder] = useState(field.placeholder);
-  const [options, setOptions] = useState(field.options);
+  const [placeholder, setPlaceholder] = useState(field.placeholder || "");
+  const [options, setOptions] = useState(field.options || []);
   console.log("checked" + " " + required);
   function HandleSubmit() {
+    console.log("submitted..");
     const cleanedOptions = options.filter((option) => option.trim() !== "");
     setOptions(cleanedOptions);
     setFormFields((prev) => {
@@ -61,6 +62,7 @@ function EditFields({ setFormFields, field }) {
             onSubmit={(e) => {
               e.preventDefault();
               HandleSubmit();
+              setOpen(false);
               console.log("submitted...");
             }}
           >
@@ -76,7 +78,8 @@ function EditFields({ setFormFields, field }) {
               </div>
               {field.type !== "radio" &&
                 field.type !== "checkbox" &&
-                field.type !== "select" && (
+                field.type !== "select" &&
+                field.type !== "date" && (
                   <div className="flex flex-col gap-1">
                     <Label htmlFor="placeholder">PlaceHolder</Label>
                     <Input

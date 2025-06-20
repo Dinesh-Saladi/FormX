@@ -11,7 +11,7 @@ router.post("/login", (req, res, next) => {
     if (!user) {
       return res.status(401).json({ success: false, message: info.message || "Login failed" });
     }
-
+    
     req.logIn(user, (err) => {
       if (err) return next(err);
       return res.json({ success: true, message: "Login successful", user });

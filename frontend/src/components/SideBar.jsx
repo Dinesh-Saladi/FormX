@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Gavel,
@@ -12,6 +12,12 @@ import {
   ClipboardList,
   ListChecks,
   ListCheck,
+  Copy,
+  FileTextIcon,
+  Files,
+  Layout,
+  FileStack,
+  BookTemplate,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuthStore } from "../store/useAuthStore";
 import Cookies from "js-cookie";
+import Generate from "./CreateForm/Generate";
 
 const navItems = [
   {
@@ -27,17 +34,23 @@ const navItems = [
     href: "/dashboard",
   },
   {
-    title: "Responses",
-    icon: <Inbox className="w-5 h-5" />,
-    href: "/dashboard/responses",
+    title: "Templates",
+    icon: <Layout className="w-5 h-5" />,
+    href: "/dashboard/templates",
   },
 ];
 
-function SideBar() {
+function SideBar({ setFormFields }) {
   const location = useLocation();
   const { logout } = useAuthStore();
   const navigate = useNavigate();
+  const [newForm, setNewForm] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setNewForm(false);
+    if (newForm) navigate("/dashboard/create");
+  }, [newForm]);
 
   const handleLogout = async () => {
     const logoutPromise = logout();
@@ -91,12 +104,13 @@ function SideBar() {
               <span>Quick Actions</span>
               <div className="flex-grow border-t text-muted-foreground" />
             </li>
-            {/* <li>
-              <CreateAuction vis={true} />
-            </li>
             <li>
-              <JoinAuction vis={true} />
-            </li> */}
+              <Generate
+                setNewForm={setNewForm}
+                setFormFields={setFormFields}
+                sidebar={true}
+              />
+            </li>
           </ul>
         </nav>
 
@@ -145,12 +159,14 @@ function SideBar() {
             <li>
               <div className="flex-grow border-t text-muted-foreground" />
             </li>
-            {/* <li>
-              <CreateAuction vis={false} />
-            </li>
             <li>
-              <JoinAuction vis={false} />
-            </li> */}
+              <Generate
+                setNewForm={setNewForm}
+                setFormFields={setFormFields}
+                sidebar={true}
+                tab={true}
+              />
+            </li>
           </ul>
         </nav>
 
@@ -226,12 +242,13 @@ function SideBar() {
                 <li className="flex text-xs font-semibold uppercase text-muted-foreground pl-2 pt-4">
                   Quick Actions
                 </li>
-                {/* <li>
-                  <CreateAuction vis={true}/>
-                </li>
                 <li>
-                  <JoinAuction vis={true} />
-                </li> */}
+                  <Generate
+                    setNewForm={setNewForm}
+                    setFormFields={setFormFields}
+                    sidebar={true}
+                  />
+                </li>
               </ul>
             </nav>
 

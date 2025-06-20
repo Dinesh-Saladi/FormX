@@ -19,6 +19,22 @@ export const publishForm = async (req, res) => {
     }
 }
 
+export const publishTemplate = async (req, res) => {
+    const { userId, formFields } = req.body;
+    try {
+        const result = await sql`
+        INSERT INTO templates (user_id, template_fields, title)
+        VALUES (${userId}, ${JSON.stringify(formFields)}, ${formFields.title})
+        RETURNING *
+        `;
+        console.log(result);
+        return res.status(201).json({ success: true });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ success: false });
+    }
+}
+
 export const getForms = async (req, res) => {
     const { userId } = req.query;
     try {
@@ -36,6 +52,21 @@ export const getForms = async (req, res) => {
     }
 }
 
+export const getTemplates = async (req, res) => {
+    try {
+        const result = await sql`
+        SELECT uuid, user_id, name, title
+        FROM templates t
+        JOIN users u ON t.user_id = u.id
+        ORDER BY t.created_at DESC
+        `;
+        console.log(result);
+        return res.status(200).json({ succes: true, data: result });
+    } catch (e) {
+        return res.status(500).json({ succes: false });
+    }
+}
+
 export const getForm = async (req, res) => {
     const { formId } = req.query;
     try {
@@ -46,6 +77,23 @@ export const getForm = async (req, res) => {
         `;
         console.log(result);
         return res.status(200).json({ success: true, data: result[0] });
+    } catch (e) {
+        console.log(e);
+        return res.status(404).json({ success: false });
+    }
+}
+
+export const getTemplate = async (req, res) => {
+    console.log(req.query);
+    try {
+        const {templateId} = req.query;
+        const result = await sql`
+        SELECT template_fields
+        FROM templates 
+        WHERE uuid = ${templateId}
+        `;
+        console.log(result);
+        return res.status(200).json({ success: true, data: JSON.parse(result[0].template_fields) });
     } catch (e) {
         console.log(e);
         return res.status(404).json({ success: false });
@@ -81,6 +129,10 @@ export const deleteForm = async (req, res) => {
         const result = await sql`
         DELETE FROM forms
         WHERE uuid = ${uuid}
+        `;
+        const result2 = await sql`
+        DELETE FROM submissions
+        WHERE form_id = ${uuid}
         `;
         return res.status(200).json({ success: true });
     } catch (e) {

@@ -59,7 +59,7 @@ export default function SignUp() {
               try {
                 await registerPromise;
                 setTimeout(() => {
-                  navigate("/login");
+                  navigate("/dashboard");
                 }, 1000); // 1 second delay
                 // Optional cleanup
                 // setName("");

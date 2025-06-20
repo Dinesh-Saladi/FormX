@@ -19,7 +19,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Loader2, Rocket } from "lucide-react";
+import { Layout, Loader2, Rocket } from "lucide-react";
 import AddFieldButton from "@/components/CreateForm/AddFieldButton";
 import ChangeHeader from "./CreateForm/ChangeHeader";
 import { motion } from "framer-motion";
@@ -43,6 +43,7 @@ function CreateForm({ formFieldsDash }) {
   const [formData, setFormData] = useState({});
   const { systemTheme } = useTheme();
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingt, setLoadingt] = useState(false);
   const [theme, setTheme] = useState(
     formFieldsDash ? formFieldsDash.theme : "default"
   );
@@ -89,35 +90,71 @@ function CreateForm({ formFieldsDash }) {
               ease.
             </p>
           </div>
-          <Button
-            onClick={async () => {
-              setLoading(true);
-              try {
-                const res = await axios.post(`${BASE_URL}/form/publish-form`, {
-                  formFields,
-                  userId: user.id,
-                });
-                console.log(res);
-                toast.success("Form Published");
-                navigate("/dashboard");
-                Cookies.remove("form-fields", { path: "/" });
-              } catch (e) {
-                toast.error("Try Again");
-                console.log(e);
-              }
-              setLoading(false);
-            }}
-            className="shadow-2xl z-50 cursor-pointer"
-          >
-            {isLoading ? (
-              <Loader2 className="animate-spin w-full" />
-            ) : (
-              <div className="flex items-center gap-1">
-                <Rocket className="h-10 w-10" />
-                <h2>Publish Form</h2>
-              </div>
-            )}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  const res = await axios.post(
+                    `${BASE_URL}/form/publish-form`,
+                    {
+                      formFields,
+                      userId: user.id,
+                    }
+                  );
+                  console.log(res);
+                  toast.success("Form Published");
+                  navigate("/dashboard");
+                  Cookies.remove("form-fields", { path: "/" });
+                } catch (e) {
+                  toast.error("Try Again");
+                  console.log(e);
+                }
+                setLoading(false);
+              }}
+              className="shadow-2xl z-50 cursor-pointer"
+            >
+              {isLoading ? (
+                <Loader2 className="animate-spin w-full" />
+              ) : (
+                <div className="flex items-center gap-1">
+                  <Rocket className="h-10 w-10" />
+                  <h2 className="hidden md:flex">Publish Form</h2>
+                </div>
+              )}
+            </Button>
+            <Button
+              onClick={async () => {
+                setLoadingt(true);
+                try {
+                  const res = await axios.post(
+                    `${BASE_URL}/form/publish-template`,
+                    {
+                      formFields,
+                      userId: user.id,
+                    }
+                  );
+                  console.log(res);
+                  toast.success("Template Published");
+                  navigate("/dashboard");
+                  Cookies.remove("form-fields", { path: "/" });
+                } catch (e) {
+                  toast.error("Try Again");
+                  console.log(e);
+                }
+                setLoadingt(false);
+              }}
+            >
+              {isLoadingt ? (
+                <Loader2 className="animate-spin w-full" />
+              ) : (
+                <div className="flex items-center gap-1">
+                  <Layout className="h-10 w-10" />
+                  <h2 className="hidden md:flex">Publish as Template</h2>
+                </div>
+              )}
+            </Button>
+          </div>
         </motion.div>
         <div className="flex flex-col justify-center items-center mt-5 ml-5 mr-5 md:mt-10 md:ml-10 md:mr-10 mb-16">
           <Card className="min-w-[350px] w-full max-w-md py-4 rounded-xl shadow-md">

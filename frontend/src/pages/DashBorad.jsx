@@ -6,11 +6,14 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import Cookies from "js-cookie";
 import BarLoader from "../components/BarLoader";
+import NotFound from "../components/NotFound";
+import Templates from "../components/Templates";
 
 function DashBorad() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const [formFields, setFormFields] = useState(null);
+  const [toggleCookie, setToggle] = useState(false);
   const empty = {
     title: "Untitled",
     description: "Undescribed",
@@ -30,7 +33,7 @@ function DashBorad() {
       setFormFields(empty);
     }
     setGetting(false);
-  }, []);
+  }, [toggleCookie]);
 
   if (getting)
     return (
@@ -51,7 +54,7 @@ function DashBorad() {
 
   return (
     <div className="flex h-screen">
-      <SideBar />
+      <SideBar setFormFields={setFormFields}/>
       <main className="flex-1 overflow-y-auto mt-16 md:mt-0">
         <Routes>
           <Route
@@ -62,6 +65,8 @@ function DashBorad() {
             path="/create"
             element={<CreateForm formFieldsDash={formFields} />}
           />
+          <Route path="/templates" element={<Templates setToggle={setToggle}/>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
     </div>

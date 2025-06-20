@@ -29,11 +29,6 @@ export const useAuthStore = create((set, get) => ({
       let user = response.data.user;
       console.log(user);
 
-      // Ensure `user` is always a single object
-      if (Array.isArray(user) && user.length === 1) {
-        user = user[0];
-      }
-
       set({ user });
       console.log("user below");
       console.log(get().user);
@@ -52,6 +47,9 @@ export const useAuthStore = create((set, get) => ({
         password,
       });
       console.log(response.data.message);
+      let user = response.data.user;
+      console.log(user);
+      set({ user });
       return { success: true, message: response.data.message };
     } catch (error) {
       //   return { success: false, message: error.response.data.message };
