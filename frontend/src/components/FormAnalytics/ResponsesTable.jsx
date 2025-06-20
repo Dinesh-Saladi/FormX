@@ -8,6 +8,31 @@ import {
 } from "@/components/ui/table";
 import { BoxIcon, StickyNote } from "lucide-react";
 
+function formatValue(value) {
+  if (Array.isArray(value)) {
+    return value.join(", "); // or use <br /> if you want line breaks
+  }
+
+  if (isValidDate(value)) {
+    return new Date(value).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  return value;
+}
+
+function isValidDate(value) {
+  const date = new Date(value);
+  return (
+    typeof value === "string" &&
+    !isNaN(date.getTime()) &&
+    /\d{4}-\d{2}-\d{2}/.test(value)
+  );
+}
+
 function ResponsesTable({ responses, fields }) {
   return (
     <div className="flex flex-col items-center justify-center m-2">
@@ -33,7 +58,7 @@ function ResponsesTable({ responses, fields }) {
                     {fields.map((field, ind) => {
                       return (
                         <TableCell key={ind}>
-                          {submission[field.uuid]}
+                          {formatValue(submission[field.uuid])}
                         </TableCell>
                       );
                     })}

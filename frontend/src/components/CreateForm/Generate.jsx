@@ -84,7 +84,7 @@ function Generate({ setNewForm, setFormFields, sidebar, tab }) {
           )}
         </DialogTrigger>
 
-        <DialogContent className="max-w-[425px]">
+        <DialogContent className="max-w-[425px] z-100">
           <DialogHeader>
             <DialogTitle>Create New Form</DialogTitle>
             <DialogDescription>

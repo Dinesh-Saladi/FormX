@@ -49,13 +49,17 @@ function Templates({ setToggle }) {
               Templates
             </h2>
             <p className="text-muted-foreground text-lg">
-              View, manage, and analyze all your created forms in one place.
+              Discover templates designed to save time, spark ideas, and
+              simplify form creation.
             </p>
           </div>
-          {/* <Generate setNewForm={setNewForm} setFormFields={setFormFields} /> */}
         </div>
         <div>
-            <TemplateCards templates={templates} setTemplates={setTemplates} setToggle={setToggle}/>
+          <TemplateCards
+            templates={templates}
+            setTemplates={setTemplates}
+            setToggle={setToggle}
+          />
         </div>
       </motion.div>
     </div>

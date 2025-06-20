@@ -50,6 +50,7 @@ function SideBar({ setFormFields }) {
   useEffect(() => {
     setNewForm(false);
     if (newForm) navigate("/dashboard/create");
+    setIsMobileMenuOpen(false);
   }, [newForm]);
 
   const handleLogout = async () => {
