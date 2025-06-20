@@ -12,7 +12,7 @@ function CheckBox({ fieldId, setFormData, required, label, options }) {
         return (
           <div key={ind} className="flex items-center space-x-2">
             <Checkbox
-              id={ind}
+              id={`${fieldId}-${ind}`}
               checked={check?.includes(op)}
               className="cursor-pointer"
               onCheckedChange={(checked) => {
@@ -27,7 +27,7 @@ function CheckBox({ fieldId, setFormData, required, label, options }) {
                 }));
               }}
             />
-            <Label htmlFor={ind}>{op}</Label>
+            <Label htmlFor={`${fieldId}-${ind}`}>{op}</Label>
           </div>
         );
       })}

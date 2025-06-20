@@ -20,8 +20,8 @@ function Radio({ fieldId, setFormData, required, label, options }) {
         {options.map((op, ind) => {
           return (
             <div key={ind} className="flex items-center space-x-2">
-              <RadioGroupItem className="cursor-pointer" value={op} id={ind} />
-              <Label htmlFor={ind}>{op}</Label>
+              <RadioGroupItem className="cursor-pointer" value={op} id={`${fieldId}-${ind}`} />
+              <Label htmlFor={`${fieldId}-${ind}`}>{op}</Label>
             </div>
           );
         })}
