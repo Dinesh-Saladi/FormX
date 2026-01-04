@@ -8,7 +8,7 @@ export const generate = async (req, res) => {
     console.log(req.body);
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             contents: req.body.prompt,
             config: {
                 systemInstruction: `
@@ -26,6 +26,7 @@ export const generate = async (req, res) => {
                     - "options": Only required for "radio", "checkbox", and "select" types (array of strings)
             
                     Only return raw JSON. Do not include markdown, explanations, or code blocks.
+                    If the user entered some invalid input. Generate some random form.
                   `,
             },
         });
